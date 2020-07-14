@@ -48,9 +48,12 @@ def execute_statement(statement):
 
 
 if __name__ == "__main__":
+    # initialize repl
     while True:
         print("ayysql> ", end="")
+
         user_input = input().strip()
+
         if user_input.startswith(META_COMMAND_CHAR):
             meta_command_result = do_meta_command(user_input)
             if meta_command_result == MetaCommandResult.SUCCESS:
@@ -58,12 +61,12 @@ if __name__ == "__main__":
             elif meta_command_result == MetaCommandResult.UNRECOGNIZED_COMMAND:
                 print(f"unrecognized command {user_input}")
                 continue
+        else:
+            prepare_statement_result, statement = prepare_statement(user_input)
+            if prepare_statement_result == PrepareStatementResult.UNRECOGNIZED_STATEMENT:
+                print(f"Unrecognized keyword at start of '{user_input}'")
+                continue
 
-        prepare_statement_result, statement = prepare_statement(user_input)
-        if prepare_statement_result == PrepareStatementResult.UNRECOGNIZED_STATEMENT:
-            print(f"Unrecognized keyword at start of '{user_input}'")
-            continue
-
-        execute_statement(statement)
-        print("executed")
+            execute_statement(statement)
+            print("executed")
 
