@@ -7,3 +7,4 @@ spec
 * For now it will be entirely in-memory
 * For now it will be a single, hard-coded table with 3 columns
 ** (id: int, username: varchar(32), and email(varchar255))
+* insert statements will look like `insert 1 alec alec@ayyjohn.com`
