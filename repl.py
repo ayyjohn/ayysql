@@ -31,15 +31,47 @@ def do_meta_command(user_input):
         return MetaCommandResult.UNRECOGNIZED_COMMAND
 
 
+class Row:
+    MAX_USERNAME_LENGTH = 32
+    MAX_EMAIL_LENGTH = 255
+
+    def __init__(
+        self,
+        id,  # type: int
+        username,  # type: Text
+        email,  # type: Text
+    ):
+        self.id = id
+        # todo validate length against maxes
+        self.username = username
+        self.email = email
+
+    def __str__(self):
+        return f"Row(id: {self.id}, username: {self.username}, email: {self.email})"
+
+
 class Statement:
-    def __init__(self, statement_type):
+    def __init__(self, statement_type, row):
+        # type: (StatementType, Row) -> Statement
         self.statement_type = statement_type
+        self.row = row
+
+    def __str__(self):
+        return f"{self.statement_type.name} statement: {self.row}"
 
 
 def prepare_statement(user_input):
     # type: (Text) -> Tuple[PrepareStatementResult, Statement]
+    print(f"input received: {user_input}")
     if user_input.startswith("insert"):
-        return PrepareStatementResult.SUCCESS, Statement(StatementType.INSERT)
+        try:
+            _, id, username, email = user_input.split(" ")
+            insert_statement = Statement(StatementType.INSERT, Row(int(id), username, email))
+        except ValueError:
+            return PrepareStatementResult.SYNTAX_ERROR, StatementType(StatementType.UNKNOWN)
+        else:
+            print(insert_statement)
+            return PrepareStatementResult.SUCCESS, insert_statement
     elif user_input.startswith("select"):
         return PrepareStatementResult.SUCCESS, Statement(StatementType.SELECT)
     else:
