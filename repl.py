@@ -62,7 +62,6 @@ class Statement:
 
 def prepare_statement(user_input):
     # type: (Text) -> Tuple[PrepareStatementResult, Statement]
-    print(f"input received: {user_input}")
     if user_input.startswith("insert"):
         try:
             _, id, username, email = user_input.split(" ")
@@ -70,7 +69,6 @@ def prepare_statement(user_input):
         except ValueError:
             return PrepareStatementResult.SYNTAX_ERROR, StatementType(StatementType.UNKNOWN)
         else:
-            print(insert_statement)
             return PrepareStatementResult.SUCCESS, insert_statement
     elif user_input.startswith("select"):
         return PrepareStatementResult.SUCCESS, Statement(StatementType.SELECT)
