@@ -10,6 +10,9 @@ class MetaCommandResult(Enum):
     SUCCESS = 0
     UNRECOGNIZED_COMMAND = 1
 
+class ExecuteStatementResult(Enum):
+    EXECUTE_SUCCESS = 0
+    EXECUTE_TABLE_FULL = 1
 
 class PrepareStatementResult(Enum):
     SUCCESS = 0
