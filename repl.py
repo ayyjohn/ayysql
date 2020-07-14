@@ -55,7 +55,7 @@ def execute_statement(statement):
         print("unrecognized statement type")
 
 
-def start_repl():
+def run_repl():
     # type: () -> None
     while True:
         print("ayysql> ", end="")
@@ -80,4 +80,4 @@ def start_repl():
 
 
 if __name__ == "__main__":
-    start_repl()
+    run_repl()
