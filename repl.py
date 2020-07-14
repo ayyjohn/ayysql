@@ -1,6 +1,8 @@
 import sys
 from enum import Enum
 
+from typing import Text, Optional, Tuple
+
 META_COMMAND_CHAR = "."
 
 
@@ -15,11 +17,13 @@ class PrepareStatementResult(Enum):
 
 
 class StatementType(Enum):
-    INSERT = 0
-    SELECT = 1
+    UNKNOWN = 0
+    INSERT = 1
+    SELECT = 2
 
 
 def do_meta_command(user_input):
+    # type (Text) -> Optional[MetaCommandResult]
     if user_input == ".exit":
         exit(0)
     else:
@@ -32,19 +36,23 @@ class Statement:
 
 
 def prepare_statement(user_input):
+    # type: (Text) -> Tuple[PrepareStatementResult, Statement]
     if user_input.startswith("insert"):
         return PrepareStatementResult.SUCCESS, Statement(StatementType.INSERT)
     elif user_input.startswith("select"):
         return PrepareStatementResult.SUCCESS, Statement(StatementType.SELECT)
     else:
-        return PrepareStatementResult.UNRECOGNIZED_STATEMENT, None
+        return PrepareStatementResult.UNRECOGNIZED_STATEMENT, Statement(StatementType.UNKNOWN)
 
 
 def execute_statement(statement):
+    # type: (Statement) -> None
     if statement.statement_type == StatementType.INSERT:
         print("doing an insert")
     elif statement.statement_type == StatementType.SELECT:
         print("doing a select")
+    else:
+        print("unrecognized statement type")
 
 
 if __name__ == "__main__":
