@@ -1,7 +1,6 @@
 import sys
-from typing import Text, Optional, Tuple
 
-from model import Row
+from model import Table
 from commands import (
     do_meta_command,
     execute_statement,
@@ -14,6 +13,7 @@ from commands import (
 
 def run_repl():
     # type: () -> None
+    table = Table()
     while True:
         print("ayysql> ", end="")
 
@@ -32,7 +32,7 @@ def run_repl():
                 print(f"Unrecognized keyword at start of '{user_input}'")
                 continue
 
-            execute_statement(statement)
+            execute_statement(statement, table)
             print("executed")
 
 

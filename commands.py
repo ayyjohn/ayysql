@@ -1,6 +1,6 @@
 from enum import Enum
-
-from model import Row
+from typing import Text, Optional, Tuple
+from model import Row, Table
 
 
 META_COMMAND_CHAR = "."
@@ -10,9 +10,12 @@ class MetaCommandResult(Enum):
     SUCCESS = 0
     UNRECOGNIZED_COMMAND = 1
 
+
 class ExecuteStatementResult(Enum):
-    EXECUTE_SUCCESS = 0
-    EXECUTE_TABLE_FULL = 1
+    SUCCESS = 0
+    TABLE_FULL = 1
+    INVALID_STATEMENT = 2
+
 
 class PrepareStatementResult(Enum):
     SUCCESS = 0
@@ -27,8 +30,8 @@ class StatementType(Enum):
 
 
 class Statement:
-    def __init__(self, statement_type, row):
-        # type: (StatementType, Row) -> Statement
+    def __init__(self, statement_type, row=None):
+        # type: (StatementType, Optional[Row]) -> None
         self.statement_type = statement_type
         self.row = row
 
@@ -51,7 +54,7 @@ def prepare_statement(user_input):
             _, id, username, email = user_input.split(" ")
             insert_statement = Statement(StatementType.INSERT, Row(int(id), username, email))
         except ValueError:
-            return PrepareStatementResult.SYNTAX_ERROR, StatementType(StatementType.UNKNOWN)
+            return PrepareStatementResult.SYNTAX_ERROR, Statement(StatementType.UNKNOWN)
         else:
             return PrepareStatementResult.SUCCESS, insert_statement
     elif user_input.startswith("select"):
@@ -60,12 +63,30 @@ def prepare_statement(user_input):
         return PrepareStatementResult.UNRECOGNIZED_STATEMENT, Statement(StatementType.UNKNOWN)
 
 
-def execute_statement(statement):
-    # type: (Statement) -> None
+def execute_statement(statement, table):
+    # type: (Statement, Table) -> None
     if statement.statement_type == StatementType.INSERT:
-        print("doing an insert")
+        execute_insert(statement.row, table)
     elif statement.statement_type == StatementType.SELECT:
-        print("doing a select")
+        execute_select(statement, table)
     else:
         print("unrecognized statement type")
 
+
+def execute_insert(row, table):
+    # type: (Optional[Row], Table) -> ExecuteStatementResult
+    if not row:
+        return ExecuteStatementResult.INVALID_STATEMENT
+
+    if table.num_rows >= Table.MAX_ROWS:
+        return ExecuteStatementResult.TABLE_FULL
+
+    table.add_row(row)
+    return ExecuteStatementResult.SUCCESS
+
+
+def execute_select(statement, table):
+    # type: (Statement, Table) -> ExecuteStatementResult
+    for row in table.get_rows():
+        print(row)
+    return ExecuteStatementResult.SUCCESS
