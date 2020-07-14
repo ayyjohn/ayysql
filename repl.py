@@ -13,7 +13,8 @@ class MetaCommandResult(Enum):
 
 class PrepareStatementResult(Enum):
     SUCCESS = 0
-    UNRECOGNIZED_STATEMENT = 1
+    SYNTAX_ERROR = 1
+    UNRECOGNIZED_STATEMENT = 2
 
 
 class StatementType(Enum):
