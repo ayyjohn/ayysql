@@ -29,7 +29,7 @@ class Table:
         self.num_rows = 0
         self.rows = []  # type: List[Row]
 
-    def add_row(self, row):
+    def insert_row(self, row):
         # type: (Row) -> None
         self.num_rows += 1
         self.rows.append(row)

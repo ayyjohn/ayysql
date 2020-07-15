@@ -81,12 +81,13 @@ def execute_insert(row, table):
     if table.num_rows >= Table.MAX_ROWS:
         return ExecuteStatementResult.TABLE_FULL
 
-    table.add_row(row)
+    insert_result = table.insert_row(row)
     return ExecuteStatementResult.SUCCESS
 
 
 def execute_select(statement, table):
     # type: (Statement, Table) -> ExecuteStatementResult
     for row in table.get_rows():
+        # todo don't print from this level, just return rows and print from above
         print(row)
     return ExecuteStatementResult.SUCCESS
