@@ -18,7 +18,7 @@ class Row:
         self.email = email
 
     def __str__(self):
-        return f"Row(id: {self.id}, username: {self.username}, email: {self.email})"
+        return f"(id: {self.id}, username: {self.username}, email: {self.email})"
 
 
 class Table:
