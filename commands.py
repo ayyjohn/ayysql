@@ -64,13 +64,13 @@ def prepare_statement(user_input):
 
 
 def execute_statement(statement, table):
-    # type: (Statement, Table) -> None
+    # type: (Statement, Table) -> ExecuteStatementResult
     if statement.statement_type == StatementType.INSERT:
-        execute_insert(statement.row, table)
+        return execute_insert(statement.row, table)
     elif statement.statement_type == StatementType.SELECT:
-        execute_select(statement, table)
+        return execute_select(statement, table)
     else:
-        print("unrecognized statement type")
+        return ExecuteStatementResult.INVALID_STATEMENT
 
 
 def execute_insert(row, table):
