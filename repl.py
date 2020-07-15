@@ -5,6 +5,7 @@ from commands import (
     do_meta_command,
     execute_statement,
     prepare_statement,
+    ExecuteStatementResult,
     MetaCommandResult,
     META_COMMAND_CHAR,
     PrepareStatementResult,
@@ -32,8 +33,11 @@ def run_repl():
                 print(f"Unrecognized keyword at start of '{user_input}'")
                 continue
 
-            execute_statement(statement, table)
-            print("executed")
+            execute_result = execute_statement(statement, table)
+            if execute_result == ExecuteStatementResult.SUCCESS:
+                print("executed")
+            elif execute_result == ExecuteStatementResult.TABLE_FULL:
+                print("error: table full")
 
 
 if __name__ == "__main__":
