@@ -1,5 +1,12 @@
 from subprocess import Popen, PIPE, STDOUT
 
+from constants import PROMPT, EXECUTED
+from commands import META_EXIT, INSERT, SELECT
+
+STATEMENT_WITH_NULL_RETURN_EXECUTED = f"{PROMPT} {EXECUTED}"
+INSERT_STATEMENT_EXECUTED = STATEMENT_WITH_NULL_RETURN_EXECUTED
+PRINTED_PROMPT = f"{PROMPT} "
+
 
 def run_script(commands):
     with Popen(["python", "repl.py"], stdout=PIPE, stdin=PIPE, encoding="utf8") as repl:
@@ -13,18 +20,14 @@ def run_script(commands):
 
 
 def test__insert__when_called__creates_an_entry():
-    script = [
-        "insert 1 alec alec@ayyjohn.com",
-        "select",
-        ".exit",
-    ]
+    script = insert_select_and_exit(1, "alec", "alec@ayyjohn.com")
     result = run_script(script)
 
     assert result == [
-        "ayysql> executed",
-        "ayysql> (id: 1, username: alec, email: alec@ayyjohn.com)",
-        "executed",
-        "ayysql> ",
+        INSERT_STATEMENT_EXECUTED,
+        f"{PROMPT} (id: 1, username: alec, email: alec@ayyjohn.com)",
+        EXECUTED,
+        PRINTED_PROMPT,
     ]
 
 
@@ -34,25 +37,21 @@ def test__insert__too_many_rows__returns_error():
 
     result = run_script(script)
 
-    assert result[-2] == "ayysql> error: table full"
+    assert result[-2] == f"{PROMPT} error: table full"
 
 
 def test__insert__with_max_length_username_or_email__works():
     max_length_username = "a" * 32
     max_length_email = "a" * 255
-    script = [
-        f"insert 1 {max_length_username} {max_length_email}",
-        "select",
-        ".exit",
-    ]
+    script = insert_select_and_exit(1, max_length_username, max_length_email)
 
     result = run_script(script)
 
     assert result == [
-        "ayysql> executed",
-        f"ayysql> (id: 1, username: {max_length_username}, email: {max_length_email})",
-        "executed",
-        "ayysql> ",
+        INSERT_STATEMENT_EXECUTED,
+        f"{PROMPT} (id: 1, username: {max_length_username}, email: {max_length_email})",
+        EXECUTED,
+        PRINTED_PROMPT,
     ]
 
 
@@ -64,15 +63,15 @@ def test__insert__with_too_long_username_or_email__fails():
     result = run_script(script)
 
     assert result == [
-        "error: a field is too long",
-        "executed",
-        "ayysql> ",
+        f"{PROMPT} error: a field is too long",
+        STATEMENT_WITH_NULL_RETURN_EXECUTED,
+        PRINTED_PROMPT,
     ]
 
 
 def insert_select_and_exit(id, username, email):
     return [
         f"insert {id} {username} {email}",
-        "select",
-        ".exit",
+        SELECT,
+        META_EXIT,
     ]
