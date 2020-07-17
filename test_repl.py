@@ -47,9 +47,24 @@ def test__insert__with_max_length_username_or_email__works():
     ]
 
     result = run_script(script)
+
     assert result == [
         "ayysql> executed",
         f"ayysql> (id: 1, username: {max_length_username}, email: {max_length_email})",
+        "executed",
+        "ayysql> ",
+    ]
+
+
+def test__insert__with_too_long_username_or_email__fails():
+    too_long_username = "a" * 33
+    too_long_email = "a" * 256
+    script = insert_select_and_exit(1, too_long_username, too_long_email)
+
+    result = run_script(script)
+
+    assert result == [
+        "error: a field is too long",
         "executed",
         "ayysql> ",
     ]
