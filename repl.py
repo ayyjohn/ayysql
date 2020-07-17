@@ -32,8 +32,12 @@ def run_repl():
             if prepare_statement_result == PrepareStatementResult.UNRECOGNIZED_STATEMENT:
                 print(f"Unrecognized keyword at start of '{user_input}'")
                 continue
+            elif prepare_statement_result == PrepareStatementResult.FIELD_TOO_LONG:
+                print("error: a field is too long")
+                continue
 
             execute_result = execute_statement(statement, table)
+
             if execute_result == ExecuteStatementResult.SUCCESS:
                 print("executed")
             elif execute_result == ExecuteStatementResult.TABLE_FULL:
