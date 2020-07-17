@@ -99,7 +99,7 @@ def execute_insert(row, table):
     if table.num_rows >= Table.MAX_ROWS:
         return ExecuteStatementResult.TABLE_FULL
 
-    insert_result = table.insert_row(row)
+    table.insert_row(row)
     return ExecuteStatementResult.SUCCESS
 
 
