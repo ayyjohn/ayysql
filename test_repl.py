@@ -37,7 +37,7 @@ def test__insert__too_many_rows__returns_error():
     assert result[-2] == "ayysql> error: table full"
 
 
-def test__insert__with_max_length_email_and_username__works():
+def test__insert__with_max_length_username_or_email__works():
     max_length_username = "a" * 32
     max_length_email = "a" * 255
     script = [
