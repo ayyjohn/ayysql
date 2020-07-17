@@ -4,6 +4,9 @@ from model import Row, Table
 
 
 META_COMMAND_CHAR = "."
+META_EXIT = f"{META_COMMAND_CHAR}exit"
+INSERT = "insert"
+SELECT = "select"
 
 
 class MetaCommandResult(Enum):
@@ -42,7 +45,7 @@ class Statement:
 
 def do_meta_command(user_input):
     # type (Text) -> Optional[MetaCommandResult]
-    if user_input == ".exit":
+    if user_input == META_EXIT:
         exit(0)
     else:
         return MetaCommandResult.UNRECOGNIZED_COMMAND
@@ -50,9 +53,9 @@ def do_meta_command(user_input):
 
 def prepare_statement(user_input):
     # type: (Text) -> Tuple[PrepareStatementResult, Statement]
-    if user_input.startswith("insert"):
+    if user_input.startswith(INSERT):
         return prepare_insert(user_input)
-    elif user_input.startswith("select"):
+    elif user_input.startswith(SELECT):
         return prepare_select(user_input)
     else:
         return PrepareStatementResult.UNRECOGNIZED_STATEMENT, Statement(StatementType.UNKNOWN)
