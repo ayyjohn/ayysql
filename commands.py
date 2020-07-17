@@ -51,17 +51,34 @@ def do_meta_command(user_input):
 def prepare_statement(user_input):
     # type: (Text) -> Tuple[PrepareStatementResult, Statement]
     if user_input.startswith("insert"):
-        try:
-            _, id, username, email = user_input.split(" ")
-            insert_statement = Statement(StatementType.INSERT, Row(int(id), username, email))
-        except ValueError:
-            return PrepareStatementResult.SYNTAX_ERROR, Statement(StatementType.UNKNOWN)
-        else:
-            return PrepareStatementResult.SUCCESS, insert_statement
+        return prepare_insert(user_input)
     elif user_input.startswith("select"):
-        return PrepareStatementResult.SUCCESS, Statement(StatementType.SELECT)
+        return prepare_select(user_input)
     else:
         return PrepareStatementResult.UNRECOGNIZED_STATEMENT, Statement(StatementType.UNKNOWN)
+
+
+def prepare_select(user_input):
+    # type: (Text) -> Tuple[PrepareStatementResult, Statement]
+    return PrepareStatementResult.SUCCESS, Statement(StatementType.SELECT)
+
+
+def prepare_insert(user_input):
+    # type: (Text) -> Tuple[PrepareStatementResult, Statement]
+    try:
+        _, id, username, email = user_input.split(" ")
+
+        if not all(id, username, email):
+            return PrepareStatementResult.SYNTAX_ERROR
+
+        if len(username) > Row.MAX_USERNAME_LENGTH or len(email) > Row.MAX_EMAIL_LENGTH:
+            return PrepareStatementResult.STRING_TOO_LONG
+
+        insert_statement = Statement(StatementType.INSERT, Row(int(id), username, email))
+    except ValueError:
+        return PrepareStatementResult.SYNTAX_ERROR, Statement(StatementType.UNKNOWN)
+    else:
+        return PrepareStatementResult.SUCCESS, insert_statement
 
 
 def execute_statement(statement, table):
