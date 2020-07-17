@@ -69,10 +69,10 @@ def prepare_insert(user_input):
         _, id, username, email = user_input.split(" ")
 
         if not all([id, username, email]):
-            return PrepareStatementResult.SYNTAX_ERROR
+            return PrepareStatementResult.SYNTAX_ERROR, Statement(StatementType.UNKNOWN)
 
         if len(username) > Row.MAX_USERNAME_LENGTH or len(email) > Row.MAX_EMAIL_LENGTH:
-            return PrepareStatementResult.FIELD_TOO_LONG
+            return PrepareStatementResult.FIELD_TOO_LONG, Statement(StatementType.UNKNOWN)
 
         insert_statement = Statement(StatementType.INSERT, Row(int(id), username, email))
     except ValueError:
