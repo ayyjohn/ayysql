@@ -68,7 +68,7 @@ def prepare_insert(user_input):
     try:
         _, id, username, email = user_input.split(" ")
 
-        if not all(id, username, email):
+        if not all([id, username, email]):
             return PrepareStatementResult.SYNTAX_ERROR
 
         if len(username) > Row.MAX_USERNAME_LENGTH or len(email) > Row.MAX_EMAIL_LENGTH:
