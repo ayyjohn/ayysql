@@ -53,3 +53,11 @@ def test__insert__with_max_length_username_or_email__works():
         "executed",
         "ayysql> ",
     ]
+
+
+def insert_select_and_exit(id, username, email):
+    return [
+        f"insert {id} {username} {email}",
+        "select",
+        ".exit",
+    ]
