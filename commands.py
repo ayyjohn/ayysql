@@ -72,7 +72,7 @@ def prepare_insert(user_input):
             return PrepareStatementResult.SYNTAX_ERROR
 
         if len(username) > Row.MAX_USERNAME_LENGTH or len(email) > Row.MAX_EMAIL_LENGTH:
-            return PrepareStatementResult.STRING_TOO_LONG
+            return PrepareStatementResult.FIELD_TOO_LONG
 
         insert_statement = Statement(StatementType.INSERT, Row(int(id), username, email))
     except ValueError:
