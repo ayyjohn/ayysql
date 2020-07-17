@@ -20,7 +20,7 @@ class ExecuteStatementResult(Enum):
 class PrepareStatementResult(Enum):
     SUCCESS = 0
     SYNTAX_ERROR = 1
-    STRING_TOO_LONG = 2
+    FIELD_TOO_LONG = 2
     UNRECOGNIZED_STATEMENT = 3
 
 
