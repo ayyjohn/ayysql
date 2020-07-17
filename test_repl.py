@@ -69,9 +69,28 @@ def test__insert__with_too_long_username_or_email__fails():
     ]
 
 
+def test__insert__persists_data_between_runs():
+    first_script = insert_select_and_exit(1, "alec", "alec@ayyjohn.com")
+
+    run_script(first_script)
+
+    second_script = select_and_exit()
+    result = run_script(second_script)
+
+    assert result == [
+        f"{PROMPT} (id: 1, username: alec, email: alec@ayyjohn.com)",
+        EXECUTED,
+        PRINTED_PROMPT,
+    ]
+
+
 def insert_select_and_exit(id, username, email):
     return [
         f"insert {id} {username} {email}",
         SELECT,
         META_EXIT,
     ]
+
+
+def select_and_exit():
+    return [SELECT, META_EXIT]
