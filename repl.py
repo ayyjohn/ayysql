@@ -12,20 +12,20 @@ from commands import (
     prepare_statement,
 )
 
-from constants import ERROR, EXECUTED, NAME, PROMPT
+from constants import ERROR, EXECUTED, NAME, PROMPT, TABLE_FILENAME
 from table import Table
 
 
 def run_repl():
     # type: () -> None
-    table = Table()
+    table = Table.open(TABLE_FILENAME)
     while True:
         print(PROMPT, end=" ")
 
         user_input = input().strip()
 
         if user_input.startswith(META_COMMAND_CHAR):
-            meta_command_result = do_meta_command(user_input)
+            meta_command_result = do_meta_command(user_input, table)
             if meta_command_result == MetaCommandResult.SUCCESS:
                 continue
             elif meta_command_result == MetaCommandResult.UNRECOGNIZED_COMMAND:

@@ -44,9 +44,10 @@ class Statement:
         return f"{self.statement_type.name} statement: {self.row}"
 
 
-def do_meta_command(user_input):
-    # type (Text) -> Optional[MetaCommandResult]
+def do_meta_command(user_input, table):
+    # type (Text, Table) -> Optional[MetaCommandResult]
     if user_input == META_EXIT:
+        table.close()
         exit(0)
     else:
         return MetaCommandResult.UNRECOGNIZED_COMMAND

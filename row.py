@@ -3,14 +3,13 @@ from struct import calcsize, pack, pack_into, unpack, unpack_from
 from typing import List, Optional, Text, Tuple, Union
 
 from constants import NULL, UTF8
+from pager import PAGE_SIZE, Page
 
 # to pack/unpack a row, we need to know the types
 # currently a row consists of an id (int), and two strings of length 32 and 255
 ROW_FORMAT = "i32s255s"
 ROW_SIZE = calcsize(ROW_FORMAT)
-PAGE_SIZE = 4096  # bytes, 4kb is a common page size for most vm systems
 ROWS_PER_PAGE = PAGE_SIZE // ROW_SIZE
-Page = bytearray  # type alias for function annotations
 
 
 class Row:
