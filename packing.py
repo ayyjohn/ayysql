@@ -15,6 +15,7 @@ def serialize_row(row, page, offset):
 
 
 def b(s):
+    # type: (Text) -> bytes
     return bytes(s, UTF8)
 
 
