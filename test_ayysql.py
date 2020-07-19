@@ -9,7 +9,7 @@ PRINTED_PROMPT = f"{PROMPT} "
 
 
 def run_script(commands):
-    with Popen(["python", "repl.py"], stdout=PIPE, stdin=PIPE, encoding="utf8") as repl:
+    with Popen(["./ayysql"], stdout=PIPE, stdin=PIPE, encoding="utf8") as repl:
         for command in commands:
             repl.stdin.write(command + "\n")
 
