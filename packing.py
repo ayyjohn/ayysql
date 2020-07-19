@@ -1,5 +1,5 @@
 from struct import calcsize, pack_into, unpack_from
-from typing import Tuple, Union
+from typing import Text, Tuple, Union
 
 from constants import NULL, UTF8
 
