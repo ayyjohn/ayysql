@@ -1,18 +1,19 @@
 import sys
-
-from model import Table
 from commands import (
+    INSERT,
+    META_COMMAND_CHAR,
+    META_EXIT,
+    SELECT,
+    ExecuteStatementResult,
+    MetaCommandResult,
+    PrepareStatementResult,
     do_meta_command,
     execute_statement,
     prepare_statement,
-    ExecuteStatementResult,
-    MetaCommandResult,
-    META_COMMAND_CHAR,
-    PrepareStatementResult,
 )
 
-from constants import NAME, PROMPT, EXECUTED, ERROR
-from commands import INSERT, SELECT, META_EXIT
+from constants import ERROR, EXECUTED, NAME, PROMPT
+from model import Table
 
 
 def run_repl():
