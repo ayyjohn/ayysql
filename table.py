@@ -16,12 +16,12 @@ class Table:
         # type: () -> List[Row]
         rows = []
         for row_num in range(self.num_rows):
-            page, offset = self.row_slot(row_num)
+            page, offset = self.page_location(row_num)
             rows.append(Row.deserialize_from(page, offset))
         return rows
 
     # todo rename this?
-    def row_slot(self, row_num):
+    def page_location(self, row_num):
         # type: (int) -> Tuple[Page, int]
         page_num = row_num // ROWS_PER_PAGE
         page = self.pages[page_num]
@@ -35,6 +35,6 @@ class Table:
 
     def insert_row(self, row):
         # type: (Row) -> None
-        page, offset = self.row_slot(self.num_rows)
+        page, offset = self.page_location(self.num_rows)
         row.serialize_into(page, offset)
         self.num_rows += 1
