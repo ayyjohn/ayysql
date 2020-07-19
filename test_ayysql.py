@@ -1,7 +1,7 @@
 from commands import INSERT, META_EXIT, SELECT
 from subprocess import PIPE, STDOUT, Popen
 
-from constants import EXECUTED, PROMPT
+from constants import EXECUTED, PROMPT, UTF8
 
 STATEMENT_WITH_NULL_RETURN_EXECUTED = f"{PROMPT} {EXECUTED}"
 INSERT_STATEMENT_EXECUTED = STATEMENT_WITH_NULL_RETURN_EXECUTED
@@ -9,7 +9,7 @@ PRINTED_PROMPT = f"{PROMPT} "
 
 
 def run_script(commands):
-    with Popen(["./ayysql"], stdout=PIPE, stdin=PIPE, encoding="utf8") as repl:
+    with Popen(["./ayysql"], stdout=PIPE, stdin=PIPE, encoding=UTF8) as repl:
         for command in commands:
             repl.stdin.write(command + "\n")
 
