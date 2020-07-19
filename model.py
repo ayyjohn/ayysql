@@ -1,4 +1,12 @@
-from typing import Text, Optional, Tuple, List
+import sys
+from struct import pack, unpack
+from typing import List, Optional, Text, Tuple
+
+from constants import UTF8
+from packing import ROW_SIZE, deserialize_row, serialize_row
+
+PAGE_SIZE = 4096  # bytes, 4kb is a common page size for most vm systems
+ROWS_PER_PAGE = PAGE_SIZE // ROW_SIZE
 
 
 class Row:
@@ -22,18 +30,38 @@ class Row:
 
 
 class Table:
-    MAX_ROWS = 100
+    MAX_PAGES = 100
+    MAX_ROWS = ROWS_PER_PAGE * MAX_PAGES
 
     def __init__(self):
         # type: () -> None
         self.num_rows = 0
-        self.rows = []  # type: List[Row]
-
-    def insert_row(self, row):
-        # type: (Row) -> None
-        self.num_rows += 1
-        self.rows.append(row)
+        self.pages = [None] * Table.MAX_PAGES
 
     def get_rows(self):
         # type: () -> List[Row]
-        return self.rows
+        rows = []
+        for row_num in range(self.num_rows):
+            page, offset = self.row_slot(row_num)
+            id, name, email = deserialize_row(page, offset)
+            rows.append(Row(id, name, email))
+        return rows
+
+    # todo rename this?
+    def row_slot(self, row_num):
+        # type: (int) -> Tuple[bytearray, int]
+        page_num = row_num // ROWS_PER_PAGE
+        page = self.pages[page_num]
+
+        if page == None:
+            page = self.pages[page_num] = bytearray(PAGE_SIZE)
+
+        row_offset = row_num % ROWS_PER_PAGE
+        byte_offset = row_offset * ROW_SIZE
+        return (page, byte_offset)
+
+    def insert_row(self, row):
+        # type: (Row) -> None
+        page, offset = self.row_slot(self.num_rows)
+        serialize_row(row, page, offset)
+        self.num_rows += 1
