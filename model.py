@@ -36,7 +36,7 @@ class Table:
     def __init__(self):
         # type: () -> None
         self.num_rows = 0
-        self.pages = [None] * Table.MAX_PAGES
+        self.pages = [None] * Table.MAX_PAGES  # type: List[Optional[bytearray]]
 
     def get_rows(self):
         # type: () -> List[Row]
@@ -53,7 +53,7 @@ class Table:
         page_num = row_num // ROWS_PER_PAGE
         page = self.pages[page_num]
 
-        if page == None:
+        if page is None:
             page = self.pages[page_num] = bytearray(PAGE_SIZE)
 
         row_offset = row_num % ROWS_PER_PAGE
