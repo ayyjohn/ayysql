@@ -32,7 +32,7 @@ def test__insert__when_called__creates_an_entry():
 
 
 def test__insert__too_many_rows__returns_error():
-    script = [f"insert {i} alec#{i} alec{i}@ayyjohn.com" for i in range(101)]
+    script = [f"insert {i} alec#{i} alec{i}@ayyjohn.com" for i in range(1401)]
     script.append(".exit")
 
     result = run_script(script)
