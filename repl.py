@@ -46,7 +46,3 @@ def run_repl():
                 print(EXECUTED)
             elif execute_result == ExecuteStatementResult.TABLE_FULL:
                 print(f"{ERROR} table full")
-
-
-if __name__ == "__main__":
-    run_repl()
