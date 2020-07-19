@@ -13,7 +13,7 @@ from commands import (
 )
 
 from constants import ERROR, EXECUTED, NAME, PROMPT
-from model import Table
+from table import Table
 
 
 def run_repl():

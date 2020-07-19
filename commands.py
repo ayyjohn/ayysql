@@ -1,7 +1,8 @@
 from enum import Enum
 from typing import Optional, Text, Tuple
 
-from model import Row, Table
+from row import Row
+from table import Table
 
 META_COMMAND_CHAR = "."
 META_EXIT = f"{META_COMMAND_CHAR}exit"
