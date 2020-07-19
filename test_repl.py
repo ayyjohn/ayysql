@@ -1,7 +1,7 @@
-from subprocess import Popen, PIPE, STDOUT
+from commands import INSERT, META_EXIT, SELECT
+from subprocess import PIPE, STDOUT, Popen
 
-from constants import PROMPT, EXECUTED
-from commands import META_EXIT, INSERT, SELECT
+from constants import EXECUTED, PROMPT
 
 STATEMENT_WITH_NULL_RETURN_EXECUTED = f"{PROMPT} {EXECUTED}"
 INSERT_STATEMENT_EXECUTED = STATEMENT_WITH_NULL_RETURN_EXECUTED
