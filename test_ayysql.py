@@ -1,11 +1,17 @@
 from commands import INSERT, META_EXIT, SELECT
-from subprocess import PIPE, STDOUT, Popen
+from subprocess import PIPE, STDOUT, Popen, run
 
+import pytest
 from constants import EXECUTED, PROMPT, UTF8
 
 STATEMENT_WITH_NULL_RETURN_EXECUTED = f"{PROMPT} {EXECUTED}"
 INSERT_STATEMENT_EXECUTED = STATEMENT_WITH_NULL_RETURN_EXECUTED
 PRINTED_PROMPT = f"{PROMPT} "
+
+
+def setup_function(function):
+    run(["rm", "-rf", "ayydb.db"])
+    run(["touch", "ayydb.db"])
 
 
 def run_script(commands):
