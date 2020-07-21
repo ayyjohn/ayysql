@@ -2,10 +2,13 @@ import math
 import os
 from typing import List, Optional, Text
 
-CREATE_IF_NOT_EXISTS = "wb+"
+from constants import BNULL
+from row import ROW_SIZE
 
+CREATE_IF_NOT_EXISTS = "rb+"
 
 PAGE_SIZE = 4096  # bytes, 4kb is a common page size for most vm systems
+ROWS_PER_PAGE = PAGE_SIZE // ROW_SIZE
 Page = bytearray
 
 
@@ -14,7 +17,7 @@ class Pager:
         # type: (Text, int) -> None
         try:
             self.db_file = open(filename, CREATE_IF_NOT_EXISTS)
-            self.file_length = os.path.getsize(filename)
+            self.file_length = os.stat(filename).st_size
         except IOError:
             print(f"couldn't open {filename}")
             exit(0)
@@ -24,37 +27,34 @@ class Pager:
         # type: (int) -> Page
         # cache miss
         if self.pages[page_num] is None:
-            print("cache miss")
             page = Page(PAGE_SIZE)
-            print(page)
+
             # round up for partial pages
             num_pages_in_db = math.ceil(self.file_length / PAGE_SIZE)
 
             if page_num <= num_pages_in_db:
-                self.db_file.seek(page_num * PAGE_SIZE, whence=1)
-                print("reading from file")
-                print(f"fetching page num {page_num}")
-                page = Page(self.db_file.read(PAGE_SIZE))
-                print(page)
+                self.db_file.seek(page_num * PAGE_SIZE)
+                data = self.db_file.read(PAGE_SIZE)
+                page[0 : len(data)] = data
 
             self.pages[page_num] = page
-            print(f"page num {page_num} is now {page}")
-            print(self.pages[page_num])
-            return self.pages[page_num]
-        else:
-            print("cache hit")
-            print(self.pages)
-            return self.pages[page_num]
+        return self.pages[page_num]
 
-    def flush(self, page_num, size):
+    def flush(self, page_num, num_rows=ROWS_PER_PAGE):
         if self.pages[page_num] is None:
             print("tried to flush a null page")
             exit(0)
 
-        offset = self.db_file.seek(page_num * PAGE_SIZE)
-        self.db_file.write(self.pages[page_num], size)
+        self.db_file.seek(page_num * PAGE_SIZE)
+        actual_data = self.pages[page_num][: num_rows * ROW_SIZE]
+        self.db_file.write(actual_data)
 
     @classmethod
     def open(cls, filename, max_pages):
         # type: (Text, int) -> Pager
         return cls(filename, max_pages=max_pages)
+
+
+if __name__ == "__main__":
+    p = Pager.open("ayydb.db", 100)
+    p.get_page(0)
