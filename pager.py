@@ -1,5 +1,6 @@
 import math
 import os
+from pathlib import Path
 from typing import List, Optional, Text
 
 from constants import BNULL
@@ -16,6 +17,7 @@ class Pager:
     def __init__(self, filename, max_pages=100):
         # type: (Text, int) -> None
         try:
+            Path(filename).touch(exist_ok=True)
             self.db_file = open(filename, CREATE_IF_NOT_EXISTS)
             self.file_length = os.stat(filename).st_size
         except IOError:
