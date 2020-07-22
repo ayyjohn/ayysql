@@ -11,7 +11,6 @@ PRINTED_PROMPT = f"{PROMPT} "
 
 def setup_function(function):
     run(["rm", "-rf", "ayydb.db"])
-    run(["touch", "ayydb.db"])
 
 
 def run_script(commands):
