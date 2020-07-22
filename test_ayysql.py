@@ -14,7 +14,7 @@ def setup_function(function):
 
 
 def run_script(commands):
-    with Popen(["./ayysql"], stdout=PIPE, stdin=PIPE, encoding=UTF8) as repl:
+    with Popen(["./ayysql", "ayydb.db"], stdout=PIPE, stdin=PIPE, encoding=UTF8) as repl:
         for command in commands:
             repl.stdin.write(command + "\n")
 
@@ -22,6 +22,16 @@ def run_script(commands):
 
         output = repl.stdout.read()
     return output.split("\n")
+
+
+def test__startup__when_wrong_number_of_args__fails():
+    with Popen(["./ayysql"], stdout=PIPE, encoding=UTF8) as repl:
+        output = repl.stdout.read()
+    assert output == "must provide db file name and nothing else\n"
+
+    with Popen(["./ayysql", "ayydb.db", "weird_extra_arg"], stdout=PIPE, encoding=UTF8) as repl:
+        output = repl.stdout.read()
+    assert output == "must provide db file name and nothing else\n"
 
 
 def test__insert__when_called__creates_an_entry():
