@@ -1,6 +1,12 @@
 #! /Users/alecjohnson/.virtualenvs/ayysql/bin/python
 
+import sys
+
 from repl import run_repl
 
 if __name__ == "__main__":
-    run_repl()
+    if len(sys.argv) != 2:
+        print("must provide db file name and nothing else")
+        sys.exit(0)
+    db_filename = sys.argv[1]
+    run_repl(db_filename)

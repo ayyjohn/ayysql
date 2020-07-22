@@ -12,13 +12,13 @@ from commands import (
     prepare_statement,
 )
 
-from constants import ERROR, EXECUTED, NAME, PROMPT, TABLE_FILENAME
+from constants import ERROR, EXECUTED, NAME, PROMPT
 from table import Table
 
 
-def run_repl():
-    # type: () -> None
-    table = Table.open(TABLE_FILENAME)
+def run_repl(db_filename):
+    # type: (Text) -> None
+    table = Table.open(db_filename)
     while True:
         print(PROMPT, end=" ")
 
