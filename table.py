@@ -18,31 +18,6 @@ class Table:
         # might actually work though, not sure
         self.num_rows = math.ceil(self.pager.file_length / ROW_SIZE)
 
-    def get_rows(self):
-        # type: () -> List[Row]
-        rows = []
-        for row_num in range(self.num_rows):
-            page, offset = self.page_location(row_num)
-            rows.append(Row.deserialize_from(page, offset))
-        return rows
-
-    # todo rename this?
-    def page_location(self, row_num):
-        # type: (int) -> Tuple[Page, int]
-        page_num = row_num // ROWS_PER_PAGE
-        page = self.pager.get_page(page_num)
-
-        row_offset = row_num % ROWS_PER_PAGE
-        byte_offset = row_offset * ROW_SIZE
-
-        return (page, byte_offset)
-
-    def insert_row(self, row):
-        # type: (Row) -> None
-        page, offset = self.page_location(self.num_rows)
-        row.serialize_into(page, offset)
-        self.num_rows += 1
-
     def close(self):
         # type: () -> None
         # write full pages

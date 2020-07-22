@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import Optional, Text, Tuple
 
+from cursor import Cursor
 from row import Row
 from table import Table
 
@@ -104,13 +105,19 @@ def execute_insert(row, table):
     if table.num_rows >= Table.MAX_ROWS:
         return ExecuteStatementResult.TABLE_FULL
 
-    table.insert_row(row)
+    cursor = Cursor.table_end(table)
+    cursor.insert_row(row)
+
     return ExecuteStatementResult.SUCCESS
 
 
 def execute_select(statement, table):
     # type: (Statement, Table) -> ExecuteStatementResult
-    for row in table.get_rows():
-        # todo don't print from this level, just return rows and print from above
+    cursor = Cursor.table_start(table)
+
+    while not cursor.end_of_table:
+        page, offset = cursor.cursor_value()
+        row = Row.deserialize_from(page, offset)
         print(row)
+        cursor.advance()
     return ExecuteStatementResult.SUCCESS
