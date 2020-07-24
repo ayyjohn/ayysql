@@ -32,7 +32,7 @@ def run_repl(db_filename):
                 print(f"unrecognized meta command {user_input}")
                 continue
         else:
-            prepare_statement_result, statement = prepare_statement(user_input)
+            statement, prepare_statement_result = prepare_statement(user_input)
             if prepare_statement_result == PrepareStatementResult.UNRECOGNIZED_STATEMENT:
                 print(f"unrecognized keyword at start of '{user_input}'")
                 continue

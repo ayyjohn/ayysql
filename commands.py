@@ -55,36 +55,39 @@ def do_meta_command(user_input, table):
 
 
 def prepare_statement(user_input):
-    # type: (Text) -> Tuple[PrepareStatementResult, Statement]
+    # type: (Text) -> Tuple[Statement, PrepareStatementResult]
     if user_input.startswith(INSERT):
         return prepare_insert(user_input)
     elif user_input.startswith(SELECT):
         return prepare_select(user_input)
     else:
-        return PrepareStatementResult.UNRECOGNIZED_STATEMENT, Statement(StatementType.UNKNOWN)
+        return (
+            Statement(StatementType.UNKNOWN),
+            PrepareStatementResult.UNRECOGNIZED_STATEMENT,
+        )
 
 
 def prepare_select(user_input):
-    # type: (Text) -> Tuple[PrepareStatementResult, Statement]
-    return PrepareStatementResult.SUCCESS, Statement(StatementType.SELECT)
+    # type: (Text) -> Tuple[Statement, PrepareStatementResult]
+    return Statement(StatementType.SELECT), PrepareStatementResult.SUCCESS
 
 
 def prepare_insert(user_input):
-    # type: (Text) -> Tuple[PrepareStatementResult, Statement]
+    # type: (Text) -> Tuple[Statement, PrepareStatementResult]
     try:
         _, id, username, email = user_input.split(" ")
 
         if not all([id, username, email]):
-            return PrepareStatementResult.SYNTAX_ERROR, Statement(StatementType.UNKNOWN)
+            return Statement(StatementType.UNKNOWN), PrepareStatementResult.SYNTAX_ERROR
 
         if len(username) > Row.MAX_USERNAME_LENGTH or len(email) > Row.MAX_EMAIL_LENGTH:
-            return PrepareStatementResult.FIELD_TOO_LONG, Statement(StatementType.UNKNOWN)
+            return Statement(StatementType.UNKNOWN), PrepareStatementResult.FIELD_TOO_LONG
 
         insert_statement = Statement(StatementType.INSERT, Row(int(id), username, email))
     except ValueError:
-        return PrepareStatementResult.SYNTAX_ERROR, Statement(StatementType.UNKNOWN)
+        return Statement(StatementType.UNKNOWN), PrepareStatementResult.SYNTAX_ERROR
     else:
-        return PrepareStatementResult.SUCCESS, insert_statement
+        return insert_statement, PrepareStatementResult.SUCCESS
 
 
 def execute_statement(statement, table):
