@@ -123,7 +123,7 @@ def execute_select(table):
     # type: (Table) -> ExecuteStatementResult
     cursor = Cursor.table_start(table)
 
-    while not cursor.end_of_table:
+    while not cursor.is_at_end_of_table:
         page, offset = cursor.location()
         row = Row.deserialize_from(page, offset)
         print(row)

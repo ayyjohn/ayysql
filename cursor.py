@@ -6,11 +6,11 @@ from table import Table
 
 
 class Cursor:
-    def __init__(self, table, row_num, end_of_table):
+    def __init__(self, table, row_num, is_at_end_of_table):
         # type: (Table, int, bool) -> None
         self.table = table
         self.row_num = row_num
-        self.end_of_table = end_of_table
+        self.is_at_end_of_table = is_at_end_of_table
 
     def location(self):
         # type: () -> Tuple[Page, int]
@@ -25,7 +25,7 @@ class Cursor:
     def advance(self):
         self.row_num += 1
         if self.row_num >= self.table.num_rows:
-            self.end_of_table = True
+            self.is_at_end_of_table = True
 
     def insert_row(self, row):
         # type: (Row) -> None
@@ -36,8 +36,8 @@ class Cursor:
     @classmethod
     def table_start(cls, table):
         # type: (Table) -> Cursor
-        end_of_table = table.num_rows == 0
-        return cls(table, 0, end_of_table)
+        is_at_end_of_table = table.num_rows == 0
+        return cls(table, 0, is_at_end_of_table)
 
     @classmethod
     def table_end(cls, table):
