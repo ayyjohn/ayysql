@@ -13,10 +13,7 @@ class Table:
         # type: (Text) -> None
         self.filename = filename
         self.pager = Pager.open(filename, max_pages=Table.MAX_PAGES)
-        # hack, in reality we shouldn't be stripping so much off the email
-        # so this should just be floordiv
-        # might actually work though, not sure
-        self.num_rows = math.ceil(self.pager.file_length / ROW_SIZE)
+        self.num_rows = self.pager.file_length // ROW_SIZE
 
     def close(self):
         # type: () -> None
