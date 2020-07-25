@@ -91,6 +91,19 @@ def test__insert__with_too_long_username_or_email__fails():
     ]
 
 
+def test__insert__with_non_int_id__fails():
+    # type: () -> None
+    script = insert_select_and_exit("INVALID_ID", "alec", "alec@ayyjohn.com")
+
+    result = run_script(script)
+
+    assert result == [
+        f"{PROMPT} error: the given ID is invalid",
+        STATEMENT_WITH_NULL_RETURN_EXECUTED,
+        PRINTED_PROMPT,
+    ]
+
+
 def test__insert__persists_data_between_runs():
     # type: () -> None
     first_script = insert_select_and_exit(1, "alec", "alec@ayyjohn.com")
