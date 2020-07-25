@@ -67,11 +67,6 @@ def prepare_statement(user_input):
         )
 
 
-def prepare_select(user_input):
-    # type: (Text) -> Tuple[Statement, PrepareStatementResult]
-    return Statement(StatementType.SELECT), PrepareStatementResult.SUCCESS
-
-
 def prepare_insert(user_input):
     # type: (Text) -> Tuple[Statement, PrepareStatementResult]
     try:
@@ -88,6 +83,11 @@ def prepare_insert(user_input):
         return Statement(StatementType.UNKNOWN), PrepareStatementResult.SYNTAX_ERROR
     else:
         return insert_statement, PrepareStatementResult.SUCCESS
+
+
+def prepare_select(user_input):
+    # type: (Text) -> Tuple[Statement, PrepareStatementResult]
+    return Statement(StatementType.SELECT), PrepareStatementResult.SUCCESS
 
 
 def execute_statement(statement, table):
