@@ -7,6 +7,7 @@ from constants import NULL, UTF8
 # to pack/unpack a row, we need to know the types
 # currently a row consists of an id (int), and two strings of length 32 and 255
 ROW_FORMAT = "i32s255s"
+# 291 according to testing
 ROW_SIZE = calcsize(ROW_FORMAT)
 
 
