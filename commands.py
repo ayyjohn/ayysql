@@ -124,7 +124,7 @@ def execute_select(table):
     cursor = Cursor.table_start(table)
 
     while not cursor.end_of_table:
-        page, offset = cursor.cursor_value()
+        page, offset = cursor.location()
         row = Row.deserialize_from(page, offset)
         print(row)
         cursor.advance()

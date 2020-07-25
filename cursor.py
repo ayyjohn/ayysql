@@ -12,7 +12,7 @@ class Cursor:
         self.row_num = row_num
         self.end_of_table = end_of_table
 
-    def cursor_value(self):
+    def location(self):
         # type: () -> Tuple[Page, int]
         page_num = self.row_num // ROWS_PER_PAGE
         page = self.table.pager.get_page(page_num)
@@ -29,7 +29,7 @@ class Cursor:
 
     def insert_row(self, row):
         # type: (Row) -> None
-        page, offset = self.cursor_value()
+        page, offset = self.location()
         row.serialize_into(page, offset)
         self.table.num_rows += 1
 
