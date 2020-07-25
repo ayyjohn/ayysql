@@ -20,27 +20,31 @@ class Table:
 
     def close(self):
         # type: () -> None
-        # write full pages
-        num_full_pages = self.num_rows // ROWS_PER_PAGE
-        for i in range(num_full_pages):
-            if self.pager.pages[i] is None:
-                continue
+        self.write_full_pages_to_disk()
+        self.write_partial_page_to_disk()
 
-            self.pager.flush(i)
-            self.pager.pages[i] = None
-
-        # write partial final page if necessary
-        num_leftover_rows = self.num_rows % ROWS_PER_PAGE
-        if num_leftover_rows > 0:
-            page_num = num_full_pages
-            if self.pager.pages[page_num] is not None:
-                self.pager.flush(page_num, num_leftover_rows)
-                self.pager.pages[page_num] = None
-
-        # clean up
         self.pager.db_file.close()
         for i in range(Table.MAX_PAGES):
             self.pager.pages[i] = None
+
+    def write_full_pages_to_disk(self):
+        # write full pages
+        num_full_pages = self.num_rows // ROWS_PER_PAGE
+        for page_num in range(num_full_pages):
+            if not self.pager.has_page_cached(page_num):
+                continue
+
+            self.pager.flush_page_to_disk(page_num)
+            self.pager.purge_cached_page(page_num)
+
+    def write_partial_page_to_disk(self):
+        # write partial final page if necessary
+        num_leftover_rows = self.num_rows % ROWS_PER_PAGE
+        if num_leftover_rows > 0:
+            page_num = self.num_rows // ROWS_PER_PAGE
+            if self.pager.has_page_cached(page_num):
+                self.pager.flush_page_to_disk(page_num, num_leftover_rows)
+                self.pager.purge_page(page_num)
 
     @classmethod
     def open(cls, filename):

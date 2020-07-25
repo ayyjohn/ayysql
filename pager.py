@@ -33,6 +33,9 @@ class Pager:
             self.cache_page(page_num, page)
         return page
 
+    def has_page_cached(self, page_num):
+        return self.pages[page_num] is not None
+
     def try_to_fetch_page_from_cache(self, page_num):
         # type: (int) -> Optional[Page]
         return self.pages[page_num]
@@ -52,14 +55,18 @@ class Pager:
         # type: (int, Page) -> None
         self.pages[page_num] = page
 
-    def flush(self, page_num, num_rows=ROWS_PER_PAGE):
-        if self.pages[page_num] is None:
+    def purge_cached_page(self, page_num):
+        # type: (int) -> None
+        self.pages[page_num] = None
+
+    def flush_page_to_disk(self, page_num, num_rows=ROWS_PER_PAGE):
+        if not self.has_page_cached(page_num):
             print("tried to flush a null page")
             exit(0)
 
         self.db_file.seek(page_num * PAGE_SIZE)
-        actual_data = self.pages[page_num][: num_rows * ROW_SIZE]
-        self.db_file.write(actual_data)
+        row_data = self.pages[page_num][: num_rows * ROW_SIZE]
+        self.db_file.write(row_data)
 
     @classmethod
     def open(cls, filename, max_pages):
