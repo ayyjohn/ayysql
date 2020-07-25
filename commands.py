@@ -103,7 +103,7 @@ def execute_statement(statement, table):
 
 def execute_insert(row, table):
     # type: (Optional[Row], Table) -> ExecuteStatementResult
-    if not row:
+    if row is None:
         return ExecuteStatementResult.INVALID_STATEMENT
 
     if table.num_rows >= Table.MAX_ROWS:
