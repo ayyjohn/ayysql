@@ -40,6 +40,8 @@ def run_repl(db_filename):
             elif prepare_statement_result == PrepareStatementResult.FIELD_TOO_LONG:
                 print(f"{ERROR} a field is too long")
                 continue
+            elif prepare_statement_result == PrepareStatementResult.INVALID_ID:
+                print(f"{ERROR} the given ID is invalid")
 
             execute_result = execute_statement(statement, table)
 

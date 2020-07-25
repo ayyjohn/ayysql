@@ -26,7 +26,8 @@ class PrepareStatementResult(Enum):
     SUCCESS = 0
     SYNTAX_ERROR = 1
     FIELD_TOO_LONG = 2
-    UNRECOGNIZED_STATEMENT = 3
+    INVALID_ID = 3
+    UNRECOGNIZED_STATEMENT = 4
 
 
 class StatementType(Enum):
@@ -71,17 +72,21 @@ def prepare_insert(user_input):
     # type: (Text) -> Tuple[Statement, PrepareStatementResult]
     try:
         _, id, username, email = user_input.split(" ")
-
-        if not all([id, username, email]):
-            return Statement(StatementType.UNKNOWN), PrepareStatementResult.SYNTAX_ERROR
-
-        if len(username) > Row.MAX_USERNAME_LENGTH or len(email) > Row.MAX_EMAIL_LENGTH:
-            return Statement(StatementType.UNKNOWN), PrepareStatementResult.FIELD_TOO_LONG
-
-        row = Row(int(id), username, email)
     except ValueError:
         return Statement(StatementType.UNKNOWN), PrepareStatementResult.SYNTAX_ERROR
+
+    if not all([id, username, email]):
+        return Statement(StatementType.UNKNOWN), PrepareStatementResult.SYNTAX_ERROR
+
+    if len(username) > Row.MAX_USERNAME_LENGTH or len(email) > Row.MAX_EMAIL_LENGTH:
+        return Statement(StatementType.UNKNOWN), PrepareStatementResult.FIELD_TOO_LONG
+
+    try:
+        id = int(id)
+    except ValueError:
+        return Statement(StatementType.UNKNOWN), PrepareStatementResult.INVALID_ID
     else:
+        row = Row(id, username, email)
         insert_statement = Statement(StatementType.INSERT, row)
         return insert_statement, PrepareStatementResult.SUCCESS
 
