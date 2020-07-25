@@ -96,7 +96,7 @@ def execute_statement(statement, table):
     if statement.statement_type == StatementType.INSERT:
         return execute_insert(statement.row, table)
     elif statement.statement_type == StatementType.SELECT:
-        return execute_select(statement, table)
+        return execute_select(table)
     else:
         return ExecuteStatementResult.INVALID_STATEMENT
 
@@ -115,8 +115,8 @@ def execute_insert(row, table):
     return ExecuteStatementResult.SUCCESS
 
 
-def execute_select(statement, table):
-    # type: (Statement, Table) -> ExecuteStatementResult
+def execute_select(table):
+    # type: (Table) -> ExecuteStatementResult
     cursor = Cursor.table_start(table)
 
     while not cursor.end_of_table:
