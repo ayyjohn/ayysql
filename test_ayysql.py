@@ -19,22 +19,22 @@ def run_script(commands):
     # type: (List[Text]) -> List[Text]
     with Popen(["./ayysql", "ayydb.db"], stdout=PIPE, stdin=PIPE, encoding=UTF8) as repl:
         for command in commands:
-            repl.stdin.write(command + "\n")
+            repl.stdin.write(command + "\n")  # type: ignore
 
-        repl.stdin.close()
+        repl.stdin.close()  # type: ignore
 
-        output = repl.stdout.read()
+        output = repl.stdout.read()  # type: ignore
     return output.split("\n")
 
 
 def test__startup__when_wrong_number_of_args__fails():
     # type: () -> None
     with Popen(["./ayysql"], stdout=PIPE, encoding=UTF8) as repl:
-        output = repl.stdout.read()
+        output = repl.stdout.read()  # type: ignore
     assert output == "must provide db file name and nothing else\n"
 
     with Popen(["./ayysql", "ayydb.db", "weird_extra_arg"], stdout=PIPE, encoding=UTF8) as repl:
-        output = repl.stdout.read()
+        output = repl.stdout.read()  # type: ignore
     assert output == "must provide db file name and nothing else\n"
 
 
