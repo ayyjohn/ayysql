@@ -6,7 +6,7 @@ from typing import List, Optional, Text
 from constants import BNULL
 from row import ROW_SIZE
 
-CREATE_IF_NOT_EXISTS = "rb+"
+READ_WRITE_BINARY = "rb+"
 
 PAGE_SIZE = 4096  # bytes, 4kb is a common page size for most vm systems
 ROWS_PER_PAGE = PAGE_SIZE // ROW_SIZE
@@ -16,13 +16,15 @@ Page = bytearray
 class Pager:
     def __init__(self, filename, max_pages=100):
         # type: (Text, int) -> None
+        create_db_file(filename)
+
         try:
-            Path(filename).touch(exist_ok=True)
-            self.db_file = open(filename, CREATE_IF_NOT_EXISTS)
-            self.file_length = os.stat(filename).st_size
+            self.db_file = open(filename, READ_WRITE_BINARY)
         except IOError:
             print(f"couldn't open {filename}")
             exit(0)
+
+        self.file_length = os.stat(filename).st_size
         self.pages = [None] * max_pages  # type: List[Optional[Page]]
 
     def shutdown(self):
@@ -75,3 +77,7 @@ class Pager:
     def open(cls, filename, max_pages):
         # type: (Text, int) -> Pager
         return cls(filename, max_pages=max_pages)
+
+
+def create_db_file(filename):
+    Path(filename).touch(exist_ok=True)
