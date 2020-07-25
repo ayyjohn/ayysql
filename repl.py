@@ -11,6 +11,7 @@ from commands import (
     execute_statement,
     prepare_statement,
 )
+from typing import Text
 
 from constants import ERROR, EXECUTED, NAME, PROMPT
 from table import Table

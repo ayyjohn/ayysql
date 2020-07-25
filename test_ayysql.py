@@ -1,5 +1,6 @@
 from commands import INSERT, META_EXIT, SELECT
 from subprocess import PIPE, STDOUT, Popen, run
+from typing import Callable, List, Text
 
 import pytest
 from constants import EXECUTED, PROMPT, UTF8
@@ -10,10 +11,12 @@ PRINTED_PROMPT = f"{PROMPT} "
 
 
 def setup_function(function):
+    # type: (Callable) -> None
     run(["rm", "-rf", "ayydb.db"])
 
 
 def run_script(commands):
+    # type: (List[Text]) -> List[Text]
     with Popen(["./ayysql", "ayydb.db"], stdout=PIPE, stdin=PIPE, encoding=UTF8) as repl:
         for command in commands:
             repl.stdin.write(command + "\n")
@@ -25,6 +28,7 @@ def run_script(commands):
 
 
 def test__startup__when_wrong_number_of_args__fails():
+    # type: () -> None
     with Popen(["./ayysql"], stdout=PIPE, encoding=UTF8) as repl:
         output = repl.stdout.read()
     assert output == "must provide db file name and nothing else\n"
@@ -35,6 +39,7 @@ def test__startup__when_wrong_number_of_args__fails():
 
 
 def test__insert__when_called__creates_an_entry():
+    # type: () -> None
     script = insert_select_and_exit(1, "alec", "alec@ayyjohn.com")
     result = run_script(script)
 
@@ -56,6 +61,7 @@ def test__insert__too_many_rows__returns_error():
 
 
 def test__insert__with_max_length_username_or_email__works():
+    # type: () -> None
     max_length_username = "a" * 32
     max_length_email = "a" * 255
     script = insert_select_and_exit(1, max_length_username, max_length_email)
@@ -71,6 +77,7 @@ def test__insert__with_max_length_username_or_email__works():
 
 
 def test__insert__with_too_long_username_or_email__fails():
+    # type: () -> None
     too_long_username = "a" * 33
     too_long_email = "a" * 256
     script = insert_select_and_exit(1, too_long_username, too_long_email)
@@ -85,6 +92,7 @@ def test__insert__with_too_long_username_or_email__fails():
 
 
 def test__insert__persists_data_between_runs():
+    # type: () -> None
     first_script = insert_select_and_exit(1, "alec", "alec@ayyjohn.com")
 
     run_script(first_script)
@@ -100,6 +108,7 @@ def test__insert__persists_data_between_runs():
 
 
 def insert_select_and_exit(id, username, email):
+    # type: (int, Text, Text) -> List[Text]
     return [
         f"insert {id} {username} {email}",
         SELECT,
@@ -108,4 +117,5 @@ def insert_select_and_exit(id, username, email):
 
 
 def select_and_exit():
+    # type: () -> List[Text]
     return [SELECT, META_EXIT]

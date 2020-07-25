@@ -1,5 +1,7 @@
-from pager import ROWS_PER_PAGE
-from row import ROW_SIZE
+from typing import Tuple
+
+from pager import ROWS_PER_PAGE, Page
+from row import ROW_SIZE, Row
 from table import Table
 
 
