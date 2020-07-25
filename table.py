@@ -38,7 +38,7 @@ class Table:
             page_num = self.num_rows // ROWS_PER_PAGE
             if self.pager.has_page_cached(page_num):
                 self.pager.flush_page_to_disk(page_num, num_leftover_rows)
-                self.pager.purge_page(page_num)
+                self.pager.purge_cached_page(page_num)
 
     @classmethod
     def open(cls, filename):
