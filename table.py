@@ -19,7 +19,7 @@ class Table:
         # type: () -> None
         self.write_full_pages_to_disk()
         self.write_partial_page_to_disk()
-        self.pager.db_file.close()
+        self.pager.shutdown()
 
     def write_full_pages_to_disk(self):
         # write full pages

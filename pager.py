@@ -25,6 +25,9 @@ class Pager:
             exit(0)
         self.pages = [None] * max_pages  # type: List[Optional[Page]]
 
+    def shutdown(self):
+        self.db_file.close()
+
     def get_page(self, page_num):
         # type: (int) -> Page
         page = self.try_to_fetch_page_from_cache(page_num)
