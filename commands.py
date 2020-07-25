@@ -79,10 +79,10 @@ def prepare_insert(user_input):
             return Statement(StatementType.UNKNOWN), PrepareStatementResult.FIELD_TOO_LONG
 
         row = Row(int(id), username, email)
-        insert_statement = Statement(StatementType.INSERT, row)
     except ValueError:
         return Statement(StatementType.UNKNOWN), PrepareStatementResult.SYNTAX_ERROR
     else:
+        insert_statement = Statement(StatementType.INSERT, row)
         return insert_statement, PrepareStatementResult.SUCCESS
 
 
