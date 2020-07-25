@@ -72,8 +72,3 @@ class Pager:
     def open(cls, filename, max_pages):
         # type: (Text, int) -> Pager
         return cls(filename, max_pages=max_pages)
-
-
-if __name__ == "__main__":
-    p = Pager.open("ayydb.db", 100)
-    p.get_page(0)
