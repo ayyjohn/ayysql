@@ -26,7 +26,7 @@ class Table:
             if self.pager.pages[i] is None:
                 continue
 
-            self.pager.flush(i, ROWS_PER_PAGE)
+            self.pager.flush(i)
             self.pager.pages[i] = None
 
         # write partial final page if necessary
