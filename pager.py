@@ -27,24 +27,30 @@ class Pager:
 
     def get_page(self, page_num):
         # type: (int) -> Page
-        # cache miss
-        if self.pages[page_num] is None:
-            page = Page(PAGE_SIZE)
+        page = self.try_to_fetch_page_from_cache(page_num)
+        if page is None:
+            page = self.get_page_from_disk(page_num)
+            self.cache_page(page_num, page)
+        return page
 
-            # round up for partial pages
-            num_pages_in_db = math.ceil(self.file_length / PAGE_SIZE)
+    def try_to_fetch_page_from_cache(self, page_num):
+        # type: (int) -> Optional[Page]
+        return self.pages[page_num]
 
-            if page_num <= num_pages_in_db:
-                self.db_file.seek(page_num * PAGE_SIZE)
-                data = self.db_file.read(PAGE_SIZE)
-                page[0 : len(data)] = data
+    def get_page_from_disk(self, page_num):
+        # type: (int) -> Page
+        page = Page(PAGE_SIZE)
+        num_pages_in_db = math.ceil(self.file_length / PAGE_SIZE)
 
-            self.pages[page_num] = page
-            return page
-        else:
-            page_ = self.pages[page_num]
-            assert page_ is not None
-            return page_
+        if page_num <= num_pages_in_db:
+            self.db_file.seek(page_num * PAGE_SIZE)
+            data = self.db_file.read(PAGE_SIZE)
+            page[0 : len(data)] = data
+        return page
+
+    def cache_page(self, page_num, page):
+        # type: (int, Page) -> None
+        self.pages[page_num] = page
 
     def flush(self, page_num, num_rows=ROWS_PER_PAGE):
         if self.pages[page_num] is None:

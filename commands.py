@@ -71,22 +71,22 @@ def prepare_statement(user_input):
 def prepare_insert(user_input):
     # type: (Text) -> Tuple[Statement, PrepareStatementResult]
     try:
-        _, id, username, email = user_input.split(" ")
+        _, str_id, username, email = user_input.split(" ")
     except ValueError:
         return Statement(StatementType.UNKNOWN), PrepareStatementResult.SYNTAX_ERROR
 
-    if not all([id, username, email]):
+    if not all([str_id, username, email]):
         return Statement(StatementType.UNKNOWN), PrepareStatementResult.SYNTAX_ERROR
 
     if len(username) > Row.MAX_USERNAME_LENGTH or len(email) > Row.MAX_EMAIL_LENGTH:
         return Statement(StatementType.UNKNOWN), PrepareStatementResult.FIELD_TOO_LONG
 
     try:
-        id = int(id)
+        int_id = int(str_id)
     except ValueError:
         return Statement(StatementType.UNKNOWN), PrepareStatementResult.INVALID_ID
     else:
-        row = Row(id, username, email)
+        row = Row(int_id, username, email)
         insert_statement = Statement(StatementType.INSERT, row)
         return insert_statement, PrepareStatementResult.SUCCESS
 
