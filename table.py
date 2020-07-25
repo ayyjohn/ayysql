@@ -22,7 +22,7 @@ class Table:
         self.pager.shutdown()
 
     def write_full_pages_to_disk(self):
-        # write full pages
+        # type: () -> None
         num_full_pages = self.num_rows // ROWS_PER_PAGE
         for page_num in range(num_full_pages):
             if not self.pager.has_page_cached(page_num):
@@ -31,7 +31,7 @@ class Table:
             self.pager.flush_page_to_disk(page_num)
 
     def write_partial_page_to_disk(self):
-        # write partial final page if necessary
+        # type: () -> None
         num_leftover_rows = self.num_rows % ROWS_PER_PAGE
         if num_leftover_rows > 0:
             page_num = self.num_rows // ROWS_PER_PAGE
