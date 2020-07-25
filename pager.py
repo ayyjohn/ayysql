@@ -40,7 +40,7 @@ class Pager:
                 page[0 : len(data)] = data
 
             self.pages[page_num] = page
-        return self.pages[page_num]
+        return self.pages[page_num]  # type: ignore
 
     def flush(self, page_num, num_rows=ROWS_PER_PAGE):
         if self.pages[page_num] is None:

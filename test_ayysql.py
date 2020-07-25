@@ -2,7 +2,7 @@ from commands import INSERT, META_EXIT, SELECT
 from subprocess import PIPE, STDOUT, Popen, run
 from typing import Callable, List, Text
 
-import pytest
+import pytest  # type: ignore
 from constants import EXECUTED, PROMPT, UTF8
 
 STATEMENT_WITH_NULL_RETURN_EXECUTED = f"{PROMPT} {EXECUTED}"
