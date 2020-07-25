@@ -23,7 +23,6 @@ class Row:
     ):
         # type: (...) -> None
         self.id = id
-        # todo validate length against maxes
         self.username = username
         self.email = email
 
