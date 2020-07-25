@@ -94,6 +94,8 @@ def prepare_select(user_input):
 def execute_statement(statement, table):
     # type: (Statement, Table) -> ExecuteStatementResult
     if statement.statement_type == StatementType.INSERT:
+        if statement.row is None:
+            return ExecuteStatementResult.INVALID_STATEMENT
         return execute_insert(statement.row, table)
     elif statement.statement_type == StatementType.SELECT:
         return execute_select(table)
@@ -102,10 +104,7 @@ def execute_statement(statement, table):
 
 
 def execute_insert(row, table):
-    # type: (Optional[Row], Table) -> ExecuteStatementResult
-    if row is None:
-        return ExecuteStatementResult.INVALID_STATEMENT
-
+    # type: (Row, Table) -> ExecuteStatementResult
     if table.num_rows >= Table.MAX_ROWS:
         return ExecuteStatementResult.TABLE_FULL
 
