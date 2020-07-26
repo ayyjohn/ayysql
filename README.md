@@ -1,7 +1,7 @@
 I'm going to implement my own sqliteDB
 
 spec
-* I'm going to have a REPL, start-able by a command, eg `ayysql`
+* I'm going to have a REPL, start-able by a command, eg `ayysql {filename}`
 * I'm going to be able to exit that REPL using `.exit`
 * I'm going to support `insert` and `select` statements
 * For now it will be a single, hard-coded table with 3 columns
