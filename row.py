@@ -1,5 +1,5 @@
 import sys
-from struct import calcsize, pack, pack_into, unpack, unpack_from
+from struct import calcsize, pack, pack_into, unpack_from
 from typing import List, Optional, Text, Tuple, Union
 
 from constants import NULL, UTF8
@@ -34,6 +34,10 @@ class Row:
         # type: (bytearray, int) -> None
         pack_into(ROW_FORMAT, page, offset, self.id, b(self.username), b(self.email))
 
+    def serialize(self):
+        # type: () -> bytes
+        return pack(ROW_FORMAT, self.id, b(self.username), b(self.email))
+
     @classmethod
     def deserialize_from(cls, page, offset):
         # type: (bytearray, int) -> Row
@@ -46,3 +50,4 @@ class Row:
 def b(s):
     # type: (Text) -> bytes
     return bytes(s, UTF8)
+    # todo refactor as .encode()
