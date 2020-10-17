@@ -1,31 +1,39 @@
 from typing import Tuple
 
+from btree import Node
 from pager import ROWS_PER_PAGE, Page
 from row import ROW_SIZE, Row
 from table import Table
 
 
 class Cursor:
-    def __init__(self, table, row_num, is_at_end_of_table):
+    def __init__(self, table, page_num, is_at_end_of_table):
         # type: (Table, int, bool) -> None
         self.table = table
-        self.row_num = row_num
-        self.is_at_end_of_table = is_at_end_of_table
+        self.page_num = table.root_page_num
+        self.cell_num = 0
+        root_node_page = table.pager.get_page(table.root_page_num)
+        root_node = Node.deserialize_from(root_node_page)
+        num_cells = root_node.num_cells
+        self.is_at_end_of_table = num_cells == 0
 
     def location(self):
         # type: () -> Tuple[Page, int]
-        page_num = self.row_num // ROWS_PER_PAGE
+        page_num = self.page_num
         page = self.table.pager.get_page(page_num)
-
-        row_offset = self.row_num % ROWS_PER_PAGE
-        byte_offset = row_offset * ROW_SIZE
-
-        return (page, byte_offset)
+        return Node.deserialize_from(page).value(self.cell_num)
 
     def advance(self):
-        self.row_num += 1
-        if self.row_num >= self.table.num_rows:
+        page_num = self.page_num
+        page = self.table.pager.get_page(page_num)
+        node = Node.deserialize_from(page)
+        self.cell_num += 1
+        if self.cell_num >= node.num_cells:
             self.is_at_end_of_table = True
+
+    def insert_leaf_node(self, key, row):
+        current_page = self.table.pager.get_page(self.page_num)
+        current_node = Node.deserialize_from(current_page)
 
     def insert_row(self, row):
         # type: (Row) -> None
@@ -36,10 +44,22 @@ class Cursor:
     @classmethod
     def table_start(cls, table):
         # type: (Table) -> Cursor
-        is_at_end_of_table = table.num_rows == 0
-        return cls(table, 0, is_at_end_of_table)
+        page_num = table.root_page_num
+        cell_num = 0
+        root_node_page = table.pager.get_page(table.root_page_num)
+        root_node = Node.deserialize_from(root_node_page)
+        num_cells = root_node.num_cells
+        is_at_end_of_table = num_cells == 0
+
+        return cls(table, cell_num, is_at_end_of_table)
 
     @classmethod
     def table_end(cls, table):
         # type: (Table) -> Cursor
-        return cls(table, table.num_rows, True)
+        page_num = table.root_page_num
+        root_node_page = table.pager.get_page(table.root_page_num)
+        root_node = Node.deserialize_from(root_node_page)
+        num_cells = root_node.num_cells
+        is_at_end_of_table = True
+
+        return cls(table, num_cells, is_at_end_of_table)
