@@ -27,6 +27,12 @@ class Pager:
         self.file_length = os.stat(filename).st_size
         self.pages = [None] * max_pages  # type: List[Optional[Page]]
 
+        if self.file_length % PAGE_SIZE != 0:
+            print("db file is not a whole number of pages, data is corrupt")
+            exit(0)
+
+        self.num_pages = self.file_length // PAGE_SIZE
+
     def shutdown(self):
         self.db_file.close()
 
@@ -36,6 +42,9 @@ class Pager:
         if page is None:
             page = self.get_page_from_disk(page_num)
             self.cache_page(page_num, page)
+
+            if page_num >= self.num_pages:
+                self.num_pages = page_num + 1
         return page
 
     def has_page_cached(self, page_num):
@@ -64,13 +73,13 @@ class Pager:
         # type: (int) -> None
         self.pages[page_num] = None
 
-    def flush_page_to_disk(self, page_num, num_rows=ROWS_PER_PAGE):
+    def flush_page_to_disk(self, page_num):
         if not self.has_page_cached(page_num):
             print("tried to flush a null page")
             exit(0)
 
         self.db_file.seek(page_num * PAGE_SIZE)
-        row_data = self.pages[page_num][: num_rows * ROW_SIZE]
+        row_data = self.pages[page_num]
         self.db_file.write(row_data)
 
     @classmethod
