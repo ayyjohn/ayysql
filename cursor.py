@@ -34,6 +34,13 @@ class Cursor:
     def insert_leaf_node(self, key, row):
         current_page = self.table.pager.get_page(self.page_num)
         current_node = Node.deserialize_from(current_page)
+        num_cells = current_node.num_cells
+        if num_cells >= LEAF_NODE_MAX_CELLS:
+            # node is full
+            raise NotImplementedError("need to implement splitting leaf nodes")
+            exit(0)
+        
+        
 
     def insert_row(self, row):
         # type: (Row) -> None
